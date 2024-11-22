@@ -17,7 +17,9 @@ class Im2LatexDataset(Dataset):
         self.pairs = self._load_pairs()
 
     def _load_pairs(self):
-        pairs = torch.load(join(self.data_dir, "tensor_formula_pairs_filter_test_{}.pkl".format(self.split)))
+        print(join(self.data_dir, "tensor_formula_pairs_filter_{}.pkl".format(self.split)))
+        
+        pairs = torch.load(join(self.data_dir, "tensor_formula_pairs_filter_{}.pkl".format(self.split)))
         for i, (img, formula) in enumerate(pairs):
             pair = (img, " ".join(formula.split()[:self.max_len]))
             pairs[i] = pair
