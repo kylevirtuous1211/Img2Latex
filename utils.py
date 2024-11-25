@@ -5,8 +5,10 @@ import torch
 import torch.nn.functional as F
 from torch.distributions.bernoulli import Bernoulli
 
-from build_vocab import PAD_TOKEN, UNK_TOKEN
+DATA_DIR = 'data/'  # Adjust this path as needed
 
+PAD_TOKEN = 2
+UNK_TOKEN = 3
 
 def collate_fn(sign2id, batch):
     # filter the pictures that have different weight or height
@@ -28,14 +30,24 @@ def collate_fn(sign2id, batch):
 
 
 def formulas2tensor(formulas, sign2id):
-    """convert formula to tensor"""
+    """Convert list of formulas to a padded tensor."""
 
     batch_size = len(formulas)
-    max_len = len(formulas[0])
-    tensors = torch.ones(batch_size, max_len, dtype=torch.long) * PAD_TOKEN
+    max_len = max(len(formula) for formula in formulas)  # Dynamically determine max length
+    
+    print(f"Converting formulas to tensors: Batch size={batch_size}, Max length={max_len}")  # Debugging
+    
+    # Initialize tensor with PAD_TOKEN using torch.full
+    tensors = torch.full((batch_size, max_len), UNK_TOKEN, dtype=torch.long)
+    
     for i, formula in enumerate(formulas):
         for j, sign in enumerate(formula):
-            tensors[i][j] = sign2id.get(sign, UNK_TOKEN)
+            if j < max_len:
+                tensors[i][j] = sign2id.get(sign, UNK_TOKEN)
+            else:
+                print(f"Warning: Formula at index {i} exceeds max_len. Truncating.")  # Optional warning
+    
+    print(f"Tensor shape: {tensors.shape}")  # Debugging
     return tensors
 
 

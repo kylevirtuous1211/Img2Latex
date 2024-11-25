@@ -49,7 +49,6 @@ def main():
             "See details in https://arxiv.org/pdf/1506.03099.pdf"
         )
     )
-
     parser.add_argument("--lr_decay", type=float, default=0.5, help="Learning Rate Decay Rate")
     parser.add_argument("--lr_patience", type=int, default=3, help="Learning Rate Decay Patience")
     parser.add_argument("--clip", type=float, default=2.0, help="The max gradient norm")
